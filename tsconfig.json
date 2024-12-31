@@ -2,16 +2,20 @@
   "extends": "expo/tsconfig.base",
   "compilerOptions": {
     "strict": true,
+    "jsx": "react", // Ensure support for JSX syntax
+    "baseUrl": ".", // Base directory for resolving non-relative imports
     "paths": {
-      "@/*": [
-        "./*"
-      ]
-    }
+      "@/*": ["./*"] // Alias `@` to the root folder
+    },
+    "moduleResolution": "node", // Use Node.js-style module resolution
+    "target": "esnext", // Target modern JavaScript
+    "skipLibCheck": true, // Skip type checking for declaration files
+    "allowSyntheticDefaultImports": true, // Allow importing non-ES modules
+    "esModuleInterop": true // Ensure compatibility with CommonJS modules
   },
-  "include": [
-    "**/*.ts",
-    "**/*.tsx",
-    ".expo/types/**/*.ts",
-    "expo-env.d.ts"
+  "include": ["**/*.ts", "**/*.tsx", ".expo/types/**/*.ts", "expo-env.d.ts"],
+  "exclude": [
+    "node_modules", // Exclude node_modules
+    "babel.config.js" // Exclude Babel config
   ]
 }

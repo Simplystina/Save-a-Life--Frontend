@@ -1,74 +1,163 @@
-import { Image, StyleSheet, Platform } from 'react-native';
-import React from 'react';
-import { HelloWave } from '@/components/HelloWave';
-import ParallaxScrollView from '@/components/ParallaxScrollView';
-import { ThemedText } from '@/components/ThemedText';
-import { ThemedView } from '@/components/ThemedView';
+import {
+  Image,
+  StyleSheet,
+  Platform,
+  Text,
+  Switch,
+  View,
+  SafeAreaView,
+  TouchableOpacity,
+} from "react-native";
+import React, { useState } from "react";
+import { ScrollView } from "react-native";
+import { LinearGradient } from "expo-linear-gradient";
+import { useRouter } from "expo-router";
+import BloodRequestCard from "@/components/DonorScreens/BloodRequestCard";
 
 export default function HomeScreen() {
+  const router = useRouter();
+  const [isDonor, setIsDonor] = useState(true);
+
+  const toggleSwitch = () => {
+    setIsDonor((prevState) => !prevState);
+    // You can navigate to a different layout or page after the switch
+    // For example:
+    //router.push('/(recipienttabs)');
+  };
+
   return (
-    <ParallaxScrollView
-      headerBackgroundColor={{ light: '#A1CEDC', dark: '#1D3D47' }}
-      headerImage={
-        <Image
-          source={require('@/assets/images/partial-react-logo.png')}
-          style={styles.reactLogo} 
-        />
-      }>
-      <ThemedView style={styles.titleContainer}>
-        <ThemedText type="title">Welcome to save a life blood donor application!</ThemedText>
-        <HelloWave />
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 1: Try it</ThemedText>
-        <ThemedText>
-          Edit <ThemedText type="defaultSemiBold">app/(tabs)/index.tsx</ThemedText> to see changes.
-          Press{' '}
-          <ThemedText type="defaultSemiBold">
-            {Platform.select({
-              ios: 'cmd + d',
-              android: 'cmd + m',
-              web: 'F12'
-            })}
-          </ThemedText>{' '}
-          to open developer tools.
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 2: Explore</ThemedText>
-        <ThemedText>
-          Tap the Explore tab to learn more about what's included in this starter app.
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 3: Get a fresh start</ThemedText>
-        <ThemedText>
-          When you're ready, run{' '}
-          <ThemedText type="defaultSemiBold">npm run reset-project</ThemedText> to get a fresh{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> directory. This will move the current{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> to{' '}
-          <ThemedText type="defaultSemiBold">app-example</ThemedText>.
-        </ThemedText>
-      </ThemedView>
-    </ParallaxScrollView>
+    <SafeAreaView className="flex-1">
+      <ScrollView>
+        {/* Header */}
+        <LinearGradient
+          colors={["#DC110A", "#C30D02"]}
+          start={{ x: 0.1, y: 0 }}
+          end={{ x: 1, y: 1 }}
+          className="pt-20 pl-4 pr-4 h-[250px] rounded-b-3xl"
+        >
+          <View className="flex-row items-center justify-between mt-4 relative">
+            {/* Greeting Section */}
+            <View className="flex-1">
+              <Text className="text-[#E8EAED] font-euclidMedium text-sm">
+                Hello 👋
+              </Text>
+              <Text className="text-[#F7F7F7] font-euclidBold text-lg">
+                Oyindamola Jimoh
+              </Text>
+            </View>
+
+            {/* Switch Section */}
+            <View className="flex-shrink-0">
+              <View className="flex-row items-center justify-between bg-gray-200 rounded-full p-1 max-w-xs w-48">
+                {/* Donor Text */}
+                <Text
+                  className={`text-xs font-euclidSemiBold ${
+                    isDonor ? "text-white" : "text-gray-700"
+                  }`}
+                >
+                  Donor
+                </Text>
+
+                {/* Switch */}
+                <TouchableOpacity
+                  onPress={toggleSwitch}
+                  className={`w-20 h-8 rounded-full ${
+                    isDonor ? "bg-red-500" : "bg-blue-500"
+                  } flex-row items-center ${
+                    isDonor ? "justify-start" : "justify-end"
+                  } p-1 transition-all duration-300`}
+                >
+                  <View className="w-6 h-6 bg-white rounded-full" />
+                </TouchableOpacity>
+
+                {/* Recipient Text */}
+                <Text
+                  className={`text-xs font-euclidSemiBold ${
+                    !isDonor ? "text-white" : "text-gray-700"
+                  }`}
+                >
+                  Recipient
+                </Text>
+              </View>
+            </View>
+          </View>
+          <View
+            style={[styles.card, styles.shadowProp]}
+            className="rounded-[10px] mt-40 flex flex-row space-x-4 items-center"
+          >
+            <Image
+              source={require("../../assets/images/Donate.png")}
+              className=" object-contain"
+            />
+            <View>
+              <View className="">
+                <Text className="font-euclidBold text-[15px] text-[#0E0E0E] font-[600]">
+                  Last Donation Date
+                </Text>
+                <View className="flex flex-row items-center gap-2">
+                  <Image
+                    source={require("../../assets/images/calendar.png")}
+                    className="object-contain"
+                  />
+                  <Text className="text-[#4C4C4C] font-euclid text-[14px]">
+                    28th September 2023
+                  </Text>
+                </View>
+              </View>
+            </View>
+          </View>
+        </LinearGradient>
+
+        {/* Content */}
+        <View className="flex-1 items-center justify-center p-4 mt-[0px] ">
+          {/* Add more scrollable content below */}
+          <View className="flex-row justify-between w-full items-center mb-4 mt-4">
+            <Text className="text-base font-euclidBold text-gray-700 ">
+              Blood Request
+            </Text>
+            <Text className="font-euclidBold text-[15px] text-[#DC110A]">
+              See all
+            </Text>
+          </View>
+          <View className="">
+            <BloodRequestCard />
+            <BloodRequestCard />
+            <BloodRequestCard />
+            <BloodRequestCard />
+            <BloodRequestCard />
+          </View>
+        </View>
+      </ScrollView>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
-  titleContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
+  heading: {
+    fontSize: 18,
+    fontWeight: "600",
+    marginBottom: 13,
   },
-  stepContainer: {
-    gap: 8,
-    marginBottom: 8,
+  card: {
+    backgroundColor: "#FFFFFF",
+    shadowColor: "#808DA19E",
+    borderRadius: 15,
+    paddingVertical: 15,
+    paddingHorizontal: 15,
+    marginVertical: 10,
+    width: 300,
+    height: 80,
+    margin: "auto",
+    position: "absolute",
+    top: 40,
+    left: 50,
+    right: 20,
   },
-  reactLogo: {
-    height: 178,
-    width: 290,
-    bottom: 0,
-    left: 0,
-    position: 'absolute',
+  shadowProp: {
+    shadowColor: "#171717",
+    shadowOffset: { width: 20, height: 20 },
+    shadowOpacity: 0.5,
+    shadowRadius: 30,
+    elevation: 20,
   },
 });

@@ -9,6 +9,9 @@ module.exports = {
     extend: {
       fontFamily: {
         euclid: ["EuclidCircularBRegular", "sans-serif"],
+        euclidMedium: ["EuclidCircularBMedium", "sans-serif"],
+        euclidSemiBold: ["EuclidCircularBSemiBold", "sans-serif"],
+        euclidBold: ["EuclidCircularBBold", "sans-serif"],
       },
     },
   },

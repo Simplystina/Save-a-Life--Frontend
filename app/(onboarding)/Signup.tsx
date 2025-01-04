@@ -252,58 +252,77 @@ const onDateChange = (event:any, selectedDate:any) => {
                 />
               </View>
               <View className="p-4 bg-white">
-      {/* Ask if user has donated blood */}
-      <Text className="mb-4">Have you donated blood before?</Text>
-      <View className="flex-row justify-between">
-        <TouchableOpacity onPress={() => handleDonationResponse('yes')}>
-          <Text className="text-blue-500">Yes</Text>
-        </TouchableOpacity>
-        <TouchableOpacity onPress={() => handleDonationResponse('no')}>
-          <Text className="text-blue-500">No</Text>
-        </TouchableOpacity>
-      </View>
+                {/* Ask if user has donated blood */}
+                <Text className="mb-4">Have you donated blood before?</Text>
+                <View className="flex-row justify-between">
+                  <TouchableOpacity
+                    onPress={() => handleDonationResponse("yes")}
+                  >
+                    <Text className="text-blue-500">Yes</Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    onPress={() => handleDonationResponse("no")}
+                  >
+                    <Text className="text-blue-500">No</Text>
+                  </TouchableOpacity>
+                </View>
 
-      {/* Conditionally show "Last Date of Blood Donation" field */}
-      {hasDonated === 'yes' && (
-        <View className="mt-4">
-          <Text className="mb-2">Last Date of Blood Donation</Text>
-          <TouchableOpacity onPress={() => setShowDatePicker(true)} className="bg-white px-4 py-3 rounded-lg border border-[#E8EAED]">
-            <Text className="text-black">
-              {lastDonationDate ? lastDonationDate.toLocaleDateString() : 'Select Date'}
-            </Text>
-          </TouchableOpacity>
+                {/* Conditionally show "Last Date of Blood Donation" field */}
+                {hasDonated === "yes" && (
+                  <View className="mt-4">
+                    <Text className="mb-2">Last Date of Blood Donation</Text>
+                    <TouchableOpacity
+                      onPress={() => setShowDatePicker(true)}
+                      className="bg-white px-4 py-3 rounded-lg border border-[#E8EAED]"
+                    >
+                      <Text className="text-black">
+                        {lastDonationDate
+                          ? lastDonationDate.toLocaleDateString()
+                          : "Select Date"}
+                      </Text>
+                    </TouchableOpacity>
 
-          {/* Show Date Picker if needed */}
-          {showDatePicker && (
-            <DateTimePicker
-              value={lastDonationDate}
-              mode="date"
-              display="default"
-              onChange={onDateChange}
-            />
-          )}
-        </View>
-      )}
-    </View>
+                    {/* Show Date Picker if needed */}
+                    {showDatePicker && (
+                      <DateTimePicker
+                        value={lastDonationDate}
+                        mode="date"
+                        display="default"
+                        onChange={onDateChange}
+                      />
+                    )}
+                  </View>
+                )}
+              </View>
             </>
           )}
         </View>
 
         {/* Button */}
-        <TouchableOpacity
-          className="bg-red-600 rounded-md py-4 mt-6"
-          onPress={() => {
-            if (step === 1) {
-              setStep(2);
-            } else {
-              router.push("/welcome"); // Navigate to a welcome screen
-            }
-          }}
-        >
-          <Text className="text-center text-white text-lg font-medium">
-            {step === 1 ? "Next" : "Sign Up"}
-          </Text>
-        </TouchableOpacity>
+        <View>
+          <TouchableOpacity
+            className="bg-red-600 rounded-md py-4 mt-6 "
+            onPress={() => {
+              if (step === 1) {
+                setStep(2);
+              } else {
+                router.push("/welcome"); // Navigate to a welcome screen
+              }
+            }}
+          >
+            <Text className="text-center text-white text-lg font-medium font-euclid">
+              {step === 1 ? "Next" : "Create an Account"}
+            </Text>
+          </TouchableOpacity>
+          <View className="flex flex-row justify-center items-center py-4">
+            <Text className="font-euclid font-[600] text-[#4C4C4C] text-sm">
+              Already have an account? 
+            </Text>
+              <Text onPress={()=>router.push("/login")} className="font-euclid font-[700] text-[#DC110A] text-sm pl-2">
+                 Log in
+              </Text>
+          </View>
+        </View>
       </View>
     </View>
   );

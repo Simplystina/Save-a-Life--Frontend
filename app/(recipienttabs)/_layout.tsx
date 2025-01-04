@@ -57,9 +57,9 @@ export default function TabLayout() {
           }}
         />
         <Tabs.Screen
-          name="request"
+          name="bloodrequest"
           options={{
-            title: "Request",
+            title: "Blood Request",
             tabBarIcon: ({ focused }) => (
               <Image
                 source={

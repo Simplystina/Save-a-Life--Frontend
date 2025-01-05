@@ -3,12 +3,13 @@ import React from 'react'
 import { LinearGradient } from 'expo-linear-gradient'
 import  Icon  from 'react-native-vector-icons/AntDesign'
 import { useRouter } from 'expo-router'
+import DonationCard from '@/components/DonorScreens/DonationCard'
 
 const donation = () => {
   const router = useRouter();
   return (
     <View>
-       <LinearGradient
+      <LinearGradient
         colors={["#DC110A", "#C30D02"]}
         start={{ x: 0.1, y: 0 }}
         end={{ x: 1, y: 1 }}
@@ -23,15 +24,23 @@ const donation = () => {
           </Pressable>
           <View className="flex-1">
             <Text className="text-[#E8EAED] text-center text-[18px] font-euclidMedium ">
-              Blood Request
+             Blood Donation History
             </Text>
           </View>
         </View>
       </LinearGradient>
+      <View className="p-4 w-full ">
+        <DonationCard />
+        <DonationCard />
+        <DonationCard />
+        <DonationCard />
+      </View>
     </View>
-  )
+  );
 }
 
 export default donation
+
+
 
 const styles = StyleSheet.create({})

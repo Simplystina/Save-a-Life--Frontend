@@ -1,14 +1,17 @@
-import { Pressable, StyleSheet, Text, TouchableOpacity, View, Image } from 'react-native'
-import React, { useState } from 'react'
+import { Pressable, StyleSheet, Text, TouchableOpacity, View, Image, ActivityIndicator, TouchableWithoutFeedback } from 'react-native'
+import React, { useState, useEffect } from 'react'
 import { LinearGradient } from 'expo-linear-gradient';
 import { useRouter } from 'expo-router';
 import Icon from "react-native-vector-icons/AntDesign";
 import { Shadow } from 'react-native-shadow-2';
 import AcceptBloodRequest from '@/components/DonorScreens/SuccessModal';
+import RejectBloodRequest  from '@/components/DonorScreens/RejectionModal';
 
 const SingleRequest = () => {
   const router = useRouter();
   const [acceptedRequest, setAcceptedRequest] = useState(false);
+  const [rejectedRequest, setRejectedRequest] = useState(false);
+
   return (
     <View className="flex flex-1">
       <LinearGradient
@@ -138,23 +141,41 @@ const SingleRequest = () => {
           )}
         </View>
 
-        {!acceptedRequest && (
-          <View className="flex  flex-row justify-between gap-4 items-center p-4">
-            <AcceptBloodRequest />
-            <TouchableOpacity
+        {!(acceptedRequest || rejectedRequest) &&
+            (
+            <View className="flex  flex-row justify-between gap-4 items-center p-4">
+              <AcceptBloodRequest setAcceptedRequest={setAcceptedRequest} />
+              <RejectBloodRequest setRejectedRequest={setRejectedRequest} />
+            </View>
+          )}
+        {rejectedRequest && (
+          <View className="w-full p-4">
+            <TouchableWithoutFeedback
               style={{
-                shadowColor: "#DAE1EB9E", // Shadow color
+                shadowColor: "#808DA19E", // Shadow color
                 shadowOffset: { width: 0, height: 4 }, // Shadow offset
                 shadowOpacity: 0.5, // Shadow opacity
                 shadowRadius: 30, // Shadow blur radius
                 elevation: 10, // Shadow for Android
               }}
-              className="w-[166px] h-[53px] bg-[#FFFFF] border-2 border-[#F64F49] rounded-[10px] shadow-md shadow-[#DAE1EB9E] flex justify-center items-center"
             >
-              <Text className="text-[#C30D02] font-euclidSemiBold text-[16px] font-bold">
-                Reject Request
-              </Text>
-            </TouchableOpacity>
+              <LinearGradient
+                colors={["#DC110A", "#C30D02"]}
+                start={{ x: 0.05, y: 0.5 }}
+                end={{ x: 1, y: 0.5 }}
+                style={{
+                  height: 53,
+                  borderRadius: 10,
+                  justifyContent: "center",
+                  alignItems: "center",
+                }}
+              >
+                <Text className="text-white font-euclid">
+                  {" "}
+                  Request has been rejected
+                </Text>
+              </LinearGradient>
+            </TouchableWithoutFeedback>
           </View>
         )}
       </View>

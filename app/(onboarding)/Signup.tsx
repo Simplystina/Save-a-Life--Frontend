@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   View,
   Text,
@@ -9,21 +9,50 @@ import {
   Platform
 } from "react-native";
 import { useRouter } from "expo-router";
- import { LinearGradient } from "expo-linear-gradient";
- import  DateTimePicker, {DateTimePickerEvent,} from "@react-native-community/datetimepicker";
-
+import { LinearGradient } from "expo-linear-gradient";
+import  DateTimePicker, {DateTimePickerEvent,} from "@react-native-community/datetimepicker";
+import { signUpUser, resetState } from "@/features/authSlice";
 import DropDownPicker from "react-native-dropdown-picker";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch } from "@/redux/store";
+import { RootState } from "@/redux/store";
+import Toast from 'react-native-toast-message';
+
 export default function Signup() {
+  const { isLoading, success, error } = useSelector((state : RootState) => state.auth);
+  const dispatch = useDispatch<AppDispatch>();
+  useEffect(() => {
+    if (success) {
+      Toast.show({
+        type: "success",
+        text1: "Registration Successful 🎉",
+       
+      });
+      dispatch(resetState());
+      router.push("/(onboarding)/OTP");
+    }
+  console.log(error,"checking the error")
+    if (error) {
+      console.log("We still got here")
+      Toast.show({
+        type: "error",
+        text1: error,
+      });
+      dispatch(resetState());
+      //router.replace("/(onboarding)/OTP")
+    }
+  }, [success, error, dispatch]);
+
   const [step, setStep] = useState(1);
   const [dateOfBirth, setDateOfBirth] = useState<Date | null>(null);
 
    //const [genotype, setGenotype] = useState<string>("");
   const [show, setShow] = useState(false);
 
-  const [bloodGroup, setBloodGroup] = useState(null);
+  const [bloodType, setBloodType] = useState(null);
   const [open, setOpen] = useState(false);
-
-  const bloodGroups = [
+   
+  const bloodTypes = [
     { label: "A+", value: "A+" },
     { label: "A-", value: "A-" },
     { label: "B+", value: "B+" },
@@ -33,15 +62,7 @@ export default function Signup() {
     { label: "AB+", value: "AB+" },
     { label: "AB-", value: "AB-" },
   ];
- const [genotype, setGenotype] = useState("");
- const [openGenotype, setOpenGenotype] = useState(false);
 
- const genotypes = [
-   { label: "AA", value: "AA" },
-   { label: "AS", value: "AS" },
-   { label: "SS", value: "SS" },
-   { label: "AC", value: "AC" },
- ];
  
   const [hasDonated, setHasDonated] = useState(null); // To track user's response (yes/no)
   const [showDatePicker, setShowDatePicker] = useState(false);
@@ -69,13 +90,45 @@ const onDateChange = (event:any, selectedDate:any) => {
  const onChange = (event: any, selectedDate?: Date) => {
    const currentDate = selectedDate || dateOfBirth;
    console.log(show,"showwww")
-   setShow(false);
    setDateOfBirth(currentDate);
+   setShow(false);
  };
- 
  
   const router = useRouter();
 
+   const [formData, setFormData] = useState({
+     firstName: "",
+     lastName: "",
+     email: "",
+     password: "",
+     confirmPassword: "",
+     stateOfResidence: "",
+     currentAddress :"" 
+   });
+
+   const { firstName, lastName, email, password, confirmPassword, currentAddress, stateOfResidence } = formData;
+
+   const handleChange = (key: string, value: string) => {
+     setFormData((prevState) => ({
+       ...prevState,
+       [key]: value, // Use key instead of e.target.name
+     }));
+   };
+   const handleSubmit = (e:any) => {
+    //router.push("/(onboarding)/OTP")
+      if (step === 1) {
+        setStep(2);
+      } else {
+        //router.push("/welcome"); 
+        e.preventDefault();
+        if (password !== confirmPassword) {
+          alert("Passwords do not match");
+          return;
+        }
+        console.log(formData, dateOfBirth, lastDonationDate);
+        dispatch(signUpUser({ firstName, lastName, email, password, currentAddress, stateOfResidence, dateOfBirth, lastDonationDate , bloodType}));
+      }
+   };
   return (
     <View className="flex-1 bg-white px-6 py-4">
       {/* Header */}
@@ -122,18 +175,23 @@ const onDateChange = (event:any, selectedDate:any) => {
                 placeholder="First Name"
                 placeholderTextColor="#858585"
                 className="bg-white px-4 py-3 rounded-lg mb-4 border border-[#E8EAED]"
+                onChangeText={(text) => handleChange("firstName", text)}
+                value={formData.firstName}
               />
               <TextInput
                 placeholder="Last Name"
                 placeholderTextColor="#858585"
-                keyboardType="email-address"
                 className="bg-white px-4 py-3 rounded-lg mb-4 border border-[#E8EAED]"
+                value={formData.lastName}
+                onChangeText={(text) => handleChange("lastName", text)}
               />
               <TextInput
                 placeholder="Email Address"
                 placeholderTextColor="#858585"
                 keyboardType="email-address"
                 className="bg-white px-4 py-3 rounded-lg mb-4 border border-[#E8EAED]"
+                value={formData.email}
+                onChangeText={(text) => handleChange("email", text)}
               />
               <View>
                 <TextInput
@@ -167,6 +225,8 @@ const onDateChange = (event:any, selectedDate:any) => {
                 placeholder="State of Residence"
                 placeholderTextColor="#858585"
                 className="bg-white px-4 py-3 rounded-lg mb-4 border border-[#E8EAED]"
+                value={formData.stateOfResidence}
+                onChangeText={(text) => handleChange("stateOfResidence", text)}
               />
             </>
           ) : (
@@ -181,25 +241,29 @@ const onDateChange = (event:any, selectedDate:any) => {
                 placeholder="Password"
                 secureTextEntry
                 className="bg-white px-4 py-3 rounded-md mb-4 border  border-[#E8EAED]"
+                value={formData.password}
+                onChangeText={(text) => handleChange("password", text)}
               />
 
               <TextInput
                 placeholder="Confirm Password"
                 secureTextEntry
                 className="bg-white px-4 py-3 rounded-md mb-4 border  border-[#E8EAED]"
+                value={formData.confirmPassword}
+                onChangeText={(text) => handleChange("confirmPassword", text)}
               />
               <View
                 className="mb-4"
                 style={{ backgroundColor: "#fff", padding: 0 }}
               >
-                {/* <Text>Select Blood Group</Text> */}
+                {/* <Text>Select Blood Type</Text> */}
                 <DropDownPicker
                   open={open}
-                  value={bloodGroup}
-                  items={bloodGroups}
+                  value={bloodType}
+                  items={bloodTypes}
                   setOpen={setOpen}
-                  setValue={setBloodGroup}
-                  placeholder="Select Blood Group"
+                  setValue={setBloodType}
+                  placeholder="Select Blood Type"
                   style={{
                     borderColor: "#E8EAED",
                     borderWidth: 1,
@@ -220,7 +284,7 @@ const onDateChange = (event:any, selectedDate:any) => {
                   }}
                 />
               </View>
-              <View className="bg-white mb-4">
+              {/* <View className="bg-white mb-4">
                 <DropDownPicker
                   open={openGenotype}
                   value={genotype}
@@ -250,7 +314,14 @@ const onDateChange = (event:any, selectedDate:any) => {
                     color: "#858585",
                   }}
                 />
-              </View>
+              </View> */}
+              <TextInput
+                placeholder="Address"
+                placeholderTextColor="#858585"
+                className="bg-white px-4 py-3 rounded-lg mb-4 border border-[#E8EAED]"
+                value={formData.currentAddress}
+                onChangeText={(text) => handleChange("currentAddress", text)}
+              />
               <View className="p-4 bg-white">
                 {/* Ask if user has donated blood */}
                 <Text className="mb-4">Have you donated blood before?</Text>
@@ -300,30 +371,51 @@ const onDateChange = (event:any, selectedDate:any) => {
 
         {/* Button */}
         <View>
-          <TouchableOpacity
-            className="bg-red-600 rounded-md py-4 mt-6 "
-            onPress={() => {
-              if (step === 1) {
-                setStep(2);
-              } else {
-                router.push("/welcome"); // Navigate to a welcome screen
-              }
-            }}
-          >
-            <Text className="text-center text-white text-lg font-medium font-euclid">
-              {step === 1 ? "Next" : "Create an Account"}
-            </Text>
-          </TouchableOpacity>
+          {step === 1 && (
+            <TouchableOpacity
+              className="bg-red-600 rounded-md py-4 mt-6 "
+              onPress={handleSubmit}
+            >
+              <Text className="text-center text-white text-lg font-medium font-euclid">
+                {step === 1 ? "Next" : "Create an Account"}
+              </Text>
+            </TouchableOpacity>
+          )}
+          {step === 2 && (
+            <View className="flex-row justify-between mt-6">
+              <TouchableOpacity
+                className="bg-white border border-red-600 rounded-md py-4 flex-1 mr-2"
+                onPress={() => setStep(1)}
+              >
+                <Text className="text-center text-red-600 text-lg font-medium font-euclid">
+                  Previous
+                </Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                className="bg-red-600 rounded-md py-4 flex-1 ml-2"
+                onPress={handleSubmit}
+              >
+                <Text className="text-center text-white text-lg font-medium font-euclid">
+                  Create Account
+                </Text>
+              </TouchableOpacity>
+            </View>
+          )}
           <View className="flex flex-row justify-center items-center py-4">
             <Text className="font-euclid font-[600] text-[#4C4C4C] text-sm">
-              Already have an account? 
+              Already have an account?
             </Text>
-              <Text onPress={()=>router.push("/login")} className="font-euclid font-[700] text-[#DC110A] text-sm pl-2">
-                 Log in
-              </Text>
+            <Text
+              onPress={() => router.push("/login")}
+              className="font-euclid font-[700] text-[#DC110A] text-sm pl-2"
+            >
+              Log in
+            </Text>
           </View>
         </View>
       </View>
+      <Toast />
     </View>
   );
 }

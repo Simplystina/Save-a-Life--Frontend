@@ -22,7 +22,7 @@ export default function HomeScreen() {
     setIsDonor((prevState) => !prevState);
     // You can navigate to a different layout or page after the switch
     // For example:
-    //router.push('/(recipienttabs)');
+    router.push('/(recipienttabs)');
   };
 
   return (
@@ -48,10 +48,10 @@ export default function HomeScreen() {
 
             {/* Switch Section */}
             <View className="flex-shrink-0">
-              <View className="flex-row items-center justify-between bg-gray-200 rounded-full p-1 max-w-xs w-48">
+              <View className="flex-row items-center bg-gray-200 rounded-full p-1 max-w-xs w-44 relative">
                 {/* Donor Text */}
                 <Text
-                  className={`text-xs font-euclidSemiBold ${
+                  className={`text-xs font-euclidSemiBold flex-1 text-center ${
                     isDonor ? "text-white" : "text-gray-700"
                   }`}
                 >
@@ -61,22 +61,20 @@ export default function HomeScreen() {
                 {/* Switch */}
                 <TouchableOpacity
                   onPress={toggleSwitch}
-                  className={`w-20 h-8 rounded-full ${
-                    isDonor ? "bg-red-500" : "bg-blue-500"
-                  } flex-row items-center ${
-                    isDonor ? "justify-start" : "justify-end"
-                  } p-1 transition-all duration-300`}
+                  className={`absolute w-20 h-8 rounded-full ${
+                    isDonor ? "bg-red-500 left-1" : "bg-blue-500 right-1"
+                  } flex-row items-center p-1 transition-all duration-300`}
                 >
-                  <View className="w-6 h-6 bg-white rounded-full" />
+                <View className="w-6 h-6 bg-white rounded-full" />
                 </TouchableOpacity>
 
                 {/* Recipient Text */}
                 <Text
-                  className={`text-xs font-euclidSemiBold ${
+                  className={`text-xs font-euclidSemiBold flex-1 text-center ${
                     !isDonor ? "text-white" : "text-gray-700"
                   }`}
                 >
-                  Recipient
+                  Donor
                 </Text>
               </View>
             </View>

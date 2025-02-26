@@ -40,7 +40,7 @@ export default function Profile() {
             </Text>
             <Text className="font-euclid text-center text-[15px]">
               jimohoyindamola@gmail.com
-            </Text>
+            </Text> 
           </View>
         </View>
       </LinearGradient>

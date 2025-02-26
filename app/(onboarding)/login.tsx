@@ -1,14 +1,85 @@
-import { StyleSheet, Text, View, TouchableOpacity ,Image, TextInput} from "react-native";
-import React, {useState} from 'react'
+import {
+  StyleSheet,
+  Text,
+  View,
+  TouchableOpacity,
+  Image,
+  TextInput,
+  ActivityIndicator,
+} from "react-native";
+import React, {useState, useEffect } from 'react'
 import { useRouter } from "expo-router";
 import { Checkbox } from "react-native-paper";
 import Icon from 'react-native-vector-icons/AntDesign';
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch } from "@/redux/store";
+import { RootState } from "@/redux/store";
+import Toast from "react-native-toast-message";
+import { loginUser, resetState } from "@/features/authSlice";
+import { Eye, EyeOff } from "lucide-react-native";
 
 const login = () => {
 
    const [rememberMe, setRememberMe] = useState(false);
-  
+   const [showPassword, setShowPassword] = useState(false);
+  const { isLoading, success, error, loginSuccess } = useSelector(
+    (state: RootState) => state.auth
+  );
    const router = useRouter();
+  const dispatch = useDispatch<AppDispatch>();
+  useEffect(() => {
+    console.log(loginSuccess,"success", error, "checking the error");
+    if (loginSuccess) {
+      console.log("We didn't get here");
+      Toast.show({
+        type: "success",
+        text1: "User LoggedIn Successfully 🎉",
+      });
+      
+      setTimeout(() => {
+        //router.replace("/(onboarding)/home");
+        dispatch(resetState());
+        router.push("/(tabs)");
+      }, 2000);
+    }
+    console.log(error, "checking the error");
+    if (error) {
+      console.log("We still got here");
+      Toast.show({
+        type: "error",
+        text1: error,
+      });
+      dispatch(resetState());
+    }
+  }, [loginSuccess, error, dispatch]);
+  
+
+      const [formData, setFormData] = useState({
+        password: "",
+        email: "",
+      });
+   
+      const { email, password } = formData;
+   
+      const handleChange = (key: string, value: string) => {
+        setFormData((prevState) => ({
+          ...prevState,
+          [key]: value, // Use key instead of e.target.name
+        }));
+      };
+      const handleSubmit = (e:any) => {
+         router.push("/(tabs)");   
+        //stop empty fields
+
+        if (!(email && password)){
+          return
+        }
+       console.log("submit button clicked")
+        e.preventDefault();
+        //dispatch(loginUser({ email, password}));
+        
+      };
+  
   return (
     <View className="flex-1 bg-white px-6 py-4">
       {/* Header */}
@@ -41,13 +112,26 @@ const login = () => {
             placeholderTextColor="#858585"
             keyboardType="email-address"
             className="bg-white px-4 py-3 rounded-lg mb-4 border border-[#E8EAED]"
+            onChangeText={(text) => handleChange("email", text)}
+            value={formData.email}
           />
-          <TextInput
-            placeholder="Password"
-            placeholderTextColor="#858585"
-            secureTextEntry={true}
-            className="bg-white px-4 py-3 rounded-lg mb-4 border border-[#E8EAED]"
-          />
+          <View className="bg-white px-4 py-3 rounded-lg mb-4 border border-[#E8EAED] flex-row items-center">
+            <TextInput
+              placeholder="Password"
+              placeholderTextColor="#858585"
+              secureTextEntry={!showPassword}
+              className="flex-1"
+              onChangeText={(text) => handleChange("password", text)}
+              value={formData.password}
+            />
+            <TouchableOpacity onPress={() => setShowPassword(!showPassword)}>
+              {showPassword ? (
+                <Eye size={20} color="#858585" />
+              ) : (
+                <EyeOff size={20} color="#858585" />
+              )}
+            </TouchableOpacity>
+          </View>
           <View className="flex-row justify-between items-center ">
             {/* Remember Me */}
             <TouchableOpacity
@@ -66,9 +150,7 @@ const login = () => {
 
             {/* Forgot Password */}
             <TouchableOpacity>
-              <Text
-                className="text-[#F64F49] text-sm font-[600] font-euclid "
-              >
+              <Text className="text-[#F64F49] text-sm font-[600] font-euclid">
                 Forgot Password?
               </Text>
             </TouchableOpacity>
@@ -76,13 +158,19 @@ const login = () => {
         </View>
         <TouchableOpacity
           className="bg-red-600 rounded-md py-4 mt-6"
-          onPress={() => router.push("/(tabs)")}
+          onPress={handleSubmit}
+          disabled={isLoading}
         >
-          <Text className="text-center text-white text-lg font-medium font-euclid">
-            log in
-          </Text>
+          {isLoading ? (
+            <ActivityIndicator size="small" color="#fff" />
+          ) : (
+            <Text className="text-center text-white text-lg font-medium font-euclid">
+              Log in
+            </Text>
+          )}
         </TouchableOpacity>
       </View>
+      <Toast />
     </View>
   );
 }

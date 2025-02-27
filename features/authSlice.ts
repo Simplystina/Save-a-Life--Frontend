@@ -11,6 +11,7 @@ interface User {
   firstName: string;
   lastName: string;
   email: string;
+  token:string
 }
 
 interface AuthState {
@@ -87,7 +88,8 @@ export const loginUser = createAsyncThunk<
       `${API_URL}/auth/login`,
       loginData
     );
-    await AsyncStorage.setItem("userToken", response.data.token); 
+    console.log(response.data.token,"response data")
+    await AsyncStorage.setItem("userToken", response.data.data.token); 
     return response.data;
   } catch (error: any) {
     return rejectWithValue(error.response.data);
@@ -127,6 +129,7 @@ const authSlice = createSlice({
   reducers: {
     resetState: (state) => {
       state.success = false;
+      state.loginSuccess = false;
       state.error = null;
     },
     logout: (state) => {

@@ -1,9 +1,11 @@
 import { configureStore } from "@reduxjs/toolkit";
 import authReducer from "../features/authSlice"; // Import your reducers
+import requestReducer from "../features/requestSlice"
 
 export const store = configureStore({
   reducer: {
     auth: authReducer,
+    request: requestReducer,
   },
 });
 

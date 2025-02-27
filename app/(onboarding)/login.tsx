@@ -38,7 +38,7 @@ const login = () => {
       
       setTimeout(() => {
         //router.replace("/(onboarding)/home");
-        dispatch(resetState());
+        dispatch(resetState())
         router.push("/(tabs)");
       }, 2000);
     }
@@ -68,7 +68,7 @@ const login = () => {
         }));
       };
       const handleSubmit = (e:any) => {
-         router.push("/(tabs)");   
+         //router.push("/(tabs)");   
         //stop empty fields
 
         if (!(email && password)){
@@ -76,7 +76,7 @@ const login = () => {
         }
        console.log("submit button clicked")
         e.preventDefault();
-        //dispatch(loginUser({ email, password}));
+        dispatch(loginUser({ email, password}));
         
       };
   

@@ -78,9 +78,9 @@ export default function TabLayout() {
           }}
         />
         <Tabs.Screen
-          name="donation"
+          name="status"
           options={{
-            title: "Donation",
+            title: "Status",
             tabBarIcon: ({ focused }) => (
               <Image
                 source={

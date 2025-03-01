@@ -2,6 +2,7 @@
 import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
+import { navigateToLogin } from "@/app/utils/navigation";
 
 // Define the shape of our API state
 interface ApiState {
@@ -40,23 +41,21 @@ interface ApiResponse {
 }
 
 
-// Thunk to create a blood request
 export const createBloodRequest = createAsyncThunk<
-  ApiResponse, // The type of data returned by the thunk
-  RequestData, // The type of the argument passed to the thunk
-  { rejectValue: string } // The type for rejected error messages
+  ApiResponse,
+  RequestData,
+  { rejectValue: string }
 >(
   "api/createBloodRequest",
-  async (requestData, { getState, rejectWithValue }) => {
+  async (requestData, { rejectWithValue, dispatch }) => {
     try {
-      // Retrieve the token from AsyncStorage
       const token = await AsyncStorage.getItem("userToken");
-      console.log(token, "token")
+      console.log(token, "token");
+
       if (!token) {
         return rejectWithValue("No authentication token found");
       }
 
-      // Make the POST request to create a blood request
       const response = await axios.post(
         "https://save-a-life-backend.onrender.com/request/create",
         requestData,
@@ -68,13 +67,27 @@ export const createBloodRequest = createAsyncThunk<
         }
       );
 
+      console.log(response.data, "data");
       return response.data;
     } catch (error: any) {
-      // Handle errors appropriately
+      console.log(error, "error");
+
+      // Check for 401 Unauthorized Error (Token Expired)
+      if (error.response?.status === 401) {
+        console.warn("Token expired, logging out...");
+
+        // Clear the token from Redux and AsyncStorage
+        dispatch(clearToken());
+
+        // Redirect user to login screen
+       navigateToLogin(); // Call the function to handle navigation
+      }
+
       return rejectWithValue(error.response?.data?.message || error.message);
     }
   }
 );
+
 
 // Create the slice
 const apiSlice = createSlice({

@@ -9,7 +9,7 @@ import {
   TouchableOpacity,
   Pressable,
   TextInput,
-  ActivityIndicator
+  ActivityIndicator,
 } from "react-native";
 import React, { useState, useEffect } from "react";
 import { ScrollView } from "react-native";
@@ -30,31 +30,30 @@ import { useAppDispatch } from "../../hooks/dispatch";
 
 const request = () => {
   const [dateOfBirth, setDateOfBirth] = useState<Date | null>(null);
-
   const [show, setShow] = useState(false);
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [isRequestForSelf, setisRequestForSelf] = useState(false);
- const [bloodType, setBloodType] = useState(null);
-   const [open, setOpen] = useState(false);
-    
-   const bloodTypes = [
-     { label: "A+", value: "A+" },
-     { label: "A-", value: "A-" },
-     { label: "B+", value: "B+" },
-     { label: "B-", value: "B-" },
-     { label: "O+", value: "O+" },
-     { label: "O-", value: "O-" },
-     { label: "AB+", value: "AB+" },
-     { label: "AB-", value: "AB-" },
-   ];
+  const [bloodType, setBloodType] = useState(null);
+  const [open, setOpen] = useState(false);
+  const [showSuccessBanner, setShowSuccessBanner] = useState(true);
+
+  const bloodTypes = [
+    { label: "A+", value: "A+" },
+    { label: "A-", value: "A-" },
+    { label: "B+", value: "B+" },
+    { label: "B-", value: "B-" },
+    { label: "O+", value: "O+" },
+    { label: "O-", value: "O-" },
+    { label: "AB+", value: "AB+" },
+    { label: "AB-", value: "AB-" },
+  ];
+
   const showDateTimePicker = () => {
     setShow(true);
   };
 
-  // Handle DatePicker value change
   const onChange = (event: any, selectedDate?: Date) => {
     const currentDate = selectedDate || dateOfBirth;
-    console.log(show, "showwww");
     setDateOfBirth(currentDate);
     setShow(false);
   };
@@ -67,77 +66,82 @@ const request = () => {
     hospitalLocation: "",
     hospitalStateOfResidence: "",
     reason: "",
-  })
+  });
 
   const isFormComplete = Object.values(form).every(
     (value) => value !== "" && value !== null
   );
-  const router = useRouter();
 
- // const dispatch = useDispatch();
+  const router = useRouter();
   const dispatch = useAppDispatch();
   const { isLoading, success, error, status } = useSelector(
     (state: RootState) => state.request
   );
+
   const handleSubmit = async (event: any) => {
-    console.log("WE got here")
+    console.log("Got here 2")
     event.preventDefault();
-    const requestData:any = {
+    const requestData: any = {
       ...form,
       bloodType: bloodType,
       isRequestForSelf: isRequestForSelf,
     };
-    console.log(form,"form")
-      const resultAction = await dispatch(createBloodRequest(requestData));
+    const resultAction = await dispatch(createBloodRequest(requestData));
   };
 
-  useEffect(()=>{
-      if (status === "success") {
-        Toast.show({
-          type: "success",
-          text1: "Blood Request Created Successfully🎉",
-        });
-        setTimeout(() => {
-            router.push("/(recipienttabs)");
-            dispatch(resetState())
-        }, 5000);
-       
-      }
-      if (status === "failed") {
-        Toast.show({
-          type: "error",
-          text1: error || "An error occurred",
-        });
-      }
-  },[status])
+  useEffect(() => {
+    console.log(status,"status")
+    if (status === "success") {
+      Toast.show({
+        type: "success",
+        text1: "Blood Request Created Successfully🎉",
+        position: "top",
+      });
+      setTimeout(() => {
+        router.push("/(recipienttabs)");
+        dispatch(resetState());
+      }, 5000);
+    }
+    if (status === "failed") {
+      console.log("got hereee")
+      Toast.show({
+        type: "error",
+        text1: error || "An error occurred",
+        position: "top"
+      });
+    }
+  }, [status]);
+
   return (
     <SafeAreaView className="flex-1">
-      <Toast />
-      <ScrollView>
-        <LinearGradient
-          colors={["#DC110A", "#C30D02"]}
-          start={{ x: 0.1, y: 0 }}
-          end={{ x: 1, y: 1 }}
-          className="pt-20 pl-4 pr-4 h-[145px]"
-        >
-          <View className="flex-row items-center justify-between  relative">
-            <Pressable onPress={() => router.back()}>
-              <View className="border-[1px] border-white rounded-[8px]  w-10 h-10 flex items-center justify-center">
-                <Icon name="left" size={24} color="white" />
-              </View>
-            </Pressable>
-            <View className="flex-1">
-              <Text className="text-[#E8EAED] text-center text-[18px] font-euclidMedium ">
-                Donation Request Details
-              </Text>
+      {/* Fixed Header */}
+      <LinearGradient
+        colors={["#DC110A", "#C30D02"]}
+        start={{ x: 0.1, y: 0 }}
+        end={{ x: 1, y: 1 }}
+        className="sticky top-0 z-10 pt-20 pl-4 pr-4 h-[145px]"
+      >
+        <View className="flex-row items-center justify-between relative">
+          <Pressable onPress={() => router.back()}>
+            <View className="border-[1px] border-white rounded-[8px] w-10 h-10 flex items-center justify-center">
+              <Icon name="left" size={24} color="white" />
             </View>
+          </Pressable>
+          <View className="flex-1">
+            <Text className="text-[#E8EAED] text-center text-[18px] font-euclidMedium">
+              Donation Request Details
+            </Text>
           </View>
-        </LinearGradient>
-
+        </View>
+      </LinearGradient>
+      <Toast />
+      {/* Scrollable Content */}
+      <ScrollView className="mt-[10px]">
         <View className="px-6 py-4 bg-white">
           <Text className="text-lg font-euclidSemiBold mb-2">
             Who needs this blood donation?
           </Text>
+
           <View className="flex-row gap-4 mb-6">
             <TouchableOpacity
               className={`px-4 py-2 rounded-lg ${
@@ -160,10 +164,10 @@ const request = () => {
           {isRequestForSelf && (
             <>
               <Text className="font-euclidMedium text-lg">
-                Recipient’s Details
+                Recipient's Details
               </Text>
               <TextInput
-                placeholder="Recipient’s Name"
+                placeholder="Recipient's Name"
                 className="border border-gray-300 rounded-lg my-2 px-4 py-3 bg-white"
                 value={form.recipientName}
                 onChangeText={(text) =>
@@ -171,12 +175,11 @@ const request = () => {
                 }
               />
               <TextInput
-                placeholder="Recipient’s Age"
+                placeholder="Recipient's Age"
                 className="border border-gray-300 bg-white rounded-lg p-3 my-2"
                 value={form.age}
                 onChangeText={(text) => setForm({ ...form, age: text })}
               />
-              {/* <Text>Select Blood Type</Text> */}
               <DropDownPicker
                 open={open}
                 value={bloodType}
@@ -187,14 +190,14 @@ const request = () => {
                 style={{
                   borderColor: "#E8EAED",
                   borderWidth: 1,
-                  zIndex: 1, // Ensure input field is above the dropdown
+                  zIndex: 1,
                 }}
                 dropDownContainerStyle={{
                   borderColor: "#E8EAED",
                   backgroundColor: "#ffffff",
-                  zIndex: 9999, // Ensure dropdown appears on top
-                  position: "absolute", // Ensure dropdown floats above other fields
-                  width: "100%", // Ensure it matches the width of the input field
+                  zIndex: 9999,
+                  position: "absolute",
+                  width: "100%",
                 }}
                 placeholderStyle={{
                   color: "#858585",
@@ -207,22 +210,22 @@ const request = () => {
           )}
 
           <Text className="font-euclidMedium text-lg mt-3">
-            Hospital’s Details
+            Hospital's Details
           </Text>
           <TextInput
-            placeholder="Hospital’s Name"
+            placeholder="Hospital's Name"
             className="border border-gray-300 rounded-lg p-3 my-2 bg-white"
             value={form.hospitalName}
             onChangeText={(text) => setForm({ ...form, hospitalName: text })}
           />
           <TextInput
-            placeholder="Doctor’s Name"
+            placeholder="Doctor's Name"
             className="border border-gray-300 rounded-lg p-3 my-2 bg-white"
             value={form.doctorsName}
             onChangeText={(text) => setForm({ ...form, doctorsName: text })}
           />
           <TextInput
-            placeholder="Hospital’s Location"
+            placeholder="Hospital's Location"
             className="border border-gray-300 rounded-lg p-3 my-2 bg-white"
             value={form.hospitalLocation}
             onChangeText={(text) =>
@@ -230,7 +233,7 @@ const request = () => {
             }
           />
           <TextInput
-            placeholder="Hospital’s State Of Residence"
+            placeholder="Hospital's State Of Residence"
             className="border border-gray-300 rounded-lg p-3 my-2 bg-white"
             value={form.hospitalStateOfResidence}
             onChangeText={(text) =>
@@ -247,11 +250,11 @@ const request = () => {
             value={form.reason}
             onChangeText={(text) => setForm({ ...form, reason: text })}
           />
+
           <TouchableOpacity
             className={`p-4 rounded-lg items-center mt-5 ${
               isFormComplete ? "bg-[#008000]" : "bg-[#23C223]"
             }`}
-            //disabled={!isFormComplete}
             onPress={handleSubmit}
           >
             <View>
@@ -264,6 +267,7 @@ const request = () => {
               )}
             </View>
           </TouchableOpacity>
+          <Toast />
         </View>
       </ScrollView>
     </SafeAreaView>
@@ -271,5 +275,3 @@ const request = () => {
 };
 
 export default request;
-
-const styles = StyleSheet.create({});

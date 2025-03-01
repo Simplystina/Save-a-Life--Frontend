@@ -11,11 +11,12 @@ import {
   ActivityIndicator,
 } from "react-native";
 import { useRouter } from "expo-router";
+import { LinearGradient } from "expo-linear-gradient";
 
-const AcceptBloodRequest = ({
-  setAcceptedRequest,
+const CancelBloodRequest = ({
+  setRejectedRequest,
 }: {
-  setAcceptedRequest: React.Dispatch<React.SetStateAction<boolean>>;
+  setRejectedRequest: React.Dispatch<React.SetStateAction<boolean>>;
 }) => {
   const [modalVisible, setModalVisible] = useState(false);
   const [confirmationModalVisible, setConfirmationModalVisible] =
@@ -29,7 +30,7 @@ const AcceptBloodRequest = ({
     setModalVisible(false);
   };
 
-  const handleAcceptRequest = async () => {
+  const handleRejectRequest = async () => {
     setLoading(true); // Start loading
     try {
       // Simulate API call
@@ -45,9 +46,8 @@ const AcceptBloodRequest = ({
 
   const closeConfirmationModal = () => {
     setConfirmationModalVisible(false);
-    console.log("Got to this modal")
     router.push("/request/1");
-     setAcceptedRequest(true);
+    setRejectedRequest(true)
   };
 
   return (
@@ -56,15 +56,17 @@ const AcceptBloodRequest = ({
       <TouchableOpacity
         onPress={openModal}
         style={{
-          shadowColor: "#DAE1EB9E",
-          shadowOffset: { width: 0, height: 4 },
-          shadowOpacity: 0.5,
-          shadowRadius: 30,
-          elevation: 10,
+          shadowColor: "#DAE1EB9E", // Shadow color
+          shadowOffset: { width: 0, height: 4 }, // Shadow offset
+          shadowOpacity: 0.5, // Shadow opacity
+          shadowRadius: 30, // Shadow blur radius
+          elevation: 10, // Shadow for Android
         }}
-        className="w-[166px] h-[53px] bg-[#008000] border-2 border-[#23C223] rounded-[10px] shadow-md flex justify-center items-center"
+        className="w-[166px] h-[53px] bg-[#FFFFF] border-2 border-[#F64F49] rounded-[10px] shadow-md shadow-[#DAE1EB9E] flex justify-center items-center"
       >
-        <Text className="text-white text-[16px] font-bold">Accept Request</Text>
+        <Text className="text-[#C30D02] font-euclidSemiBold text-[16px] font-bold">
+          Cancel Blood Request
+        </Text>
       </TouchableOpacity>
 
       {/* Confirmation Modal */}
@@ -80,41 +82,50 @@ const AcceptBloodRequest = ({
 
         <View className="absolute bottom-0 w-full bg-white rounded-t-2xl p-6 shadow-md">
           <Image
-            source={require("../../assets/images/tick-circle.png")}
+            source={require("../../assets/images/trash.png")}
             className="w-20 h-20 mx-auto mb-4"
           />
           <Text className="text-center text-[16px] font-bold mb-4">
-            Accept Blood Request
+            Cancel Blood Request
           </Text>
           <Text className="text-center text-[14px] text-[#4C4C4C] mb-6">
-            Are you sure you want to accept this blood request? Once accepted,
-            you will be contacted by the recipient.
+            You'll be cancelling your blood request and won't be contacted by
+            any donoronce you do this.
           </Text>
 
           {/* Actions */}
           <View className="flex-row justify-between">
-            <Pressable
-              onPress={handleAcceptRequest}
+            <TouchableOpacity
+              onPress={handleRejectRequest}
               style={{
-                shadowColor: "#DAE1EB9E",
-                shadowOffset: { width: 0, height: 4 },
-                shadowOpacity: 0.5,
-                shadowRadius: 30,
-                elevation: 10,
+                shadowColor: "#808DA19E", // Shadow color
+                shadowOffset: { width: 0, height: 4 }, // Shadow offset
+                shadowOpacity: 0.5, // Shadow opacity
+                shadowRadius: 30, // Shadow blur radius
+                elevation: 10, // Shadow for Android
               }}
-              className={`w-[166px] h-[53px] ${
-                loading ? "bg-[#008000]" : "bg-[#008000]"
-              } border-2 border-[#23C223] rounded-[10px] shadow-md flex justify-center items-center`}
-              disabled={loading} // Disable the button while loading
             >
-              {loading ? (
-                <ActivityIndicator color="#ffffff" />
-              ) : (
-                <Text className="text-white text-[16px] font-bold">
-                  Yes, Accept
-                </Text>
-              )}
-            </Pressable>
+              <LinearGradient
+                colors={["#DC110A", "#C30D02"]}
+                start={{ x: 0.05, y: 0.5 }}
+                end={{ x: 1, y: 0.5 }}
+                style={{
+                  width: 166,
+                  height: 53,
+                  borderRadius: 10,
+                  justifyContent: "center",
+                  alignItems: "center",
+                }}
+              >
+                {loading ? (
+                  <ActivityIndicator color="#ffffff" />
+                ) : (
+                  <Text className="text-white text-[16px] font-bold">
+                    Yes, Reject
+                  </Text>
+                )}
+              </LinearGradient>
+            </TouchableOpacity>
             <Pressable
               onPress={closeModal}
               style={{
@@ -127,14 +138,14 @@ const AcceptBloodRequest = ({
               className="w-[166px] h-[53px] bg-[#FFFFFF] border-2 border-[#858585] rounded-[10px] shadow-md flex justify-center items-center"
             >
               <Text className="text-[#4C4C4C] text-[16px] font-bold">
-                Cancel
+                No, Cancel
               </Text>
             </Pressable>
           </View>
         </View>
       </Modal>
 
-      {/* Success Modal */}
+      {/* Rejection Modal */}
       <Modal
         animationType="slide"
         transparent={true}
@@ -147,11 +158,11 @@ const AcceptBloodRequest = ({
 
         <View className="absolute bottom-0 w-full bg-white rounded-t-2xl p-6 shadow-md">
           <Text className="text-center text-[16px] font-bold mb-4">
-            Blood Request Accepted
+            Blood Request Rejected
           </Text>
           <Text className="text-center text-[14px] text-[#4C4C4C] mb-6">
-            You've accepted this blood request. Click below to view recipient
-            and hospital details.
+            You have cancelled this blood request. Click below to return to your
+            dashboard or explore other requests
           </Text>
 
           {/* Close Button */}
@@ -159,9 +170,7 @@ const AcceptBloodRequest = ({
             onPress={closeConfirmationModal}
             className="w-full h-[53px] bg-[#008000] rounded-[10px] flex justify-center items-center"
           >
-            <Text className="text-white text-[16px] font-bold">
-              View Details
-            </Text>
+            <Text className="text-white text-[16px] font-bold">Return</Text>
           </Pressable>
         </View>
       </Modal>
@@ -169,4 +178,4 @@ const AcceptBloodRequest = ({
   );
 };
 
-export default AcceptBloodRequest;
+export default CancelBloodRequest; 

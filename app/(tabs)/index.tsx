@@ -17,75 +17,69 @@ import BloodRequestCard from "@/components/DonorScreens/BloodRequestCard";
 export default function HomeScreen() {
   const router = useRouter();
   const [isDonor, setIsDonor] = useState(true);
-
   const toggleSwitch = () => {
     setIsDonor((prevState) => !prevState);
-    // You can navigate to a different layout or page after the switch
-    // For example:
-    router.push('/(recipienttabs)');
+    router.push("/(recipienttabs)");
   };
 
   return (
     <SafeAreaView className="flex-1">
-      <ScrollView>
-        {/* Header */}
-        <LinearGradient
-          colors={["#DC110A", "#C30D02"]}
-          start={{ x: 0.1, y: 0 }}
-          end={{ x: 1, y: 1 }}
-          className="pt-20 pl-4 pr-4 h-[250px] rounded-b-3xl"
-        >
-          <View className="flex-row items-center justify-between mt-4 relative">
-            {/* Greeting Section */}
-            <View className="flex-1">
-              <Text className="text-[#E8EAED] font-euclidMedium text-sm">
-                Hello 👋
-              </Text>
-              <Text className="text-[#F7F7F7] font-euclidBold text-lg">
-                Oyindamola Jimoh
-              </Text>
-            </View>
+      {/* Fixed Header */}
+      <LinearGradient
+        colors={["#DC110A", "#C30D02"]}
+        start={{ x: 0.1, y: 0 }}
+        end={{ x: 1, y: 1 }}
+        className="sticky top-0 z-10 pt-20 pl-4 pr-4 h-[250px] rounded-b-3xl"
+      >
+        <View className="flex-row items-center justify-between mt-4 relative">
+          {/* Greeting Section */}
+          <View className="flex-1">
+            <Text className="text-[#E8EAED] font-euclidMedium text-sm">
+              Hello 👋
+            </Text>
+            <Text className="text-[#F7F7F7] font-euclidBold text-lg">
+              Oyindamola Jimoh
+            </Text>
+          </View>
 
-            {/* Switch Section */}
-            <View className="flex-shrink-0">
-              <View className="flex-row items-center bg-gray-200 rounded-full p-1 max-w-xs w-44 relative">
-                {/* Donor Text */}
-                <Text
-                  className={`text-xs font-euclidSemiBold flex-1 text-center ${
-                    isDonor ? "text-white" : "text-gray-700"
-                  }`}
-                >
-                  Donor
-                </Text>
-
-                {/* Switch */}
-                <TouchableOpacity
-                  onPress={toggleSwitch}
-                  className={`absolute w-20 h-8 rounded-full ${
-                    isDonor ? "bg-red-500 left-1" : "bg-blue-500 right-1"
-                  } flex-row items-center p-1 transition-all duration-300`}
-                >
+          {/* Switch Section */}
+          <View className="flex-shrink-0">
+            <View className="flex-row items-center bg-gray-200 rounded-full p-1 max-w-xs w-44 relative">
+              {/* Donor Text */}
+              <Text
+                className={`text-xs font-euclidSemiBold flex-1 text-center ${
+                  isDonor ? "text-white" : "text-gray-700"
+                }`}
+              >
+                Donor
+              </Text>
+              {/* Switch */}
+              <TouchableOpacity
+                onPress={toggleSwitch}
+                className={`absolute w-20 h-8 rounded-full ${
+                  isDonor ? "bg-red-500 left-1" : "bg-blue-500 right-1"
+                } flex-row items-center p-1 transition-all duration-300`}
+              >
                 <View className="w-6 h-6 bg-white rounded-full" />
-                </TouchableOpacity>
-
-                {/* Recipient Text */}
-                <Text
-                  className={`text-xs font-euclidSemiBold flex-1 text-center ${
-                    !isDonor ? "text-white" : "text-gray-700"
-                  }`}
-                >
-                  Donor
-                </Text>
-              </View>
+              </TouchableOpacity>
+              {/* Recipient Text */}
+              <Text
+                className={`text-xs font-euclidSemiBold flex-1 text-center ${
+                  !isDonor ? "text-white" : "text-gray-700"
+                }`}
+              >
+                Donor
+              </Text>
             </View>
           </View>
+
           <View
             style={[styles.card, styles.shadowProp]}
-            className="rounded-[10px] mt-40 flex flex-row space-x-4 items-center"
+            className="rounded-[10px] mt-20 flex flex-row space-x-4 items-center"
           >
             <Image
               source={require("../../assets/images/Donate.png")}
-              className=" object-contain"
+              className="object-contain"
             />
             <View>
               <View className="">
@@ -104,20 +98,21 @@ export default function HomeScreen() {
               </View>
             </View>
           </View>
-        </LinearGradient>
+        </View>
+      </LinearGradient>
 
-        {/* Content */}
-        <View className="flex-1 items-center justify-center p-4 mt-[0px] ">
-          {/* Add more scrollable content below */}
+      {/* Scrollable Content */}
+      <ScrollView className="mt-[40px]">
+        <View className="flex-1 items-center justify-center p-4 mt-[0px]">
           <View className="flex-row justify-between w-full items-center mb-4 mt-4">
-            <Text className="text-base font-euclidBold text-gray-700 ">
+            <Text className="text-base font-euclidBold text-gray-700">
               Blood Request
             </Text>
             <Text className="font-euclidBold text-[15px] text-[#DC110A]">
               See all
             </Text>
           </View>
-          <View className="">
+          <View>
             <BloodRequestCard />
             <BloodRequestCard />
             <BloodRequestCard />
@@ -138,7 +133,6 @@ const styles = StyleSheet.create({
   },
   card: {
     backgroundColor: "#FFFFFF",
-    shadowColor: "#808DA19E",
     borderRadius: 15,
     paddingVertical: 15,
     paddingHorizontal: 15,

@@ -12,7 +12,7 @@ import {
 } from "react-native";
 import { useRouter } from "expo-router";
 
-const AcceptBloodRequest = ({
+const ConfirmBloodRequest = ({
   setAcceptedRequest,
 }: {
   setAcceptedRequest: React.Dispatch<React.SetStateAction<boolean>>;
@@ -45,7 +45,6 @@ const AcceptBloodRequest = ({
 
   const closeConfirmationModal = () => {
     setConfirmationModalVisible(false);
-    console.log("Got to this modal")
     router.push("/request/1");
      setAcceptedRequest(true);
   };
@@ -169,4 +168,4 @@ const AcceptBloodRequest = ({
   );
 };
 
-export default AcceptBloodRequest;
+export default ConfirmBloodRequest;

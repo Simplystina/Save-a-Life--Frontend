@@ -12,7 +12,7 @@ import {
 } from "react-native";
 import { useRouter } from "expo-router";
 
-const AcceptBloodRequest = ({
+const MarkDonationAsReceived = ({
   setAcceptedRequest,
 }: {
   setAcceptedRequest: React.Dispatch<React.SetStateAction<boolean>>;
@@ -46,7 +46,7 @@ const AcceptBloodRequest = ({
   const closeConfirmationModal = () => {
     setConfirmationModalVisible(false);
     console.log("Got to this modal")
-    router.push("/request/1");
+    router.push("/recipientrequestscreen/[id]");
      setAcceptedRequest(true);
   };
 
@@ -64,7 +64,7 @@ const AcceptBloodRequest = ({
         }}
         className="w-[166px] h-[53px] bg-[#008000] border-2 border-[#23C223] rounded-[10px] shadow-md flex justify-center items-center"
       >
-        <Text className="text-white text-[16px] font-bold">Accept Request</Text>
+        <Text className="text-white text-[16px] font-bold">Mark Donation as Complete</Text>
       </TouchableOpacity>
 
       {/* Confirmation Modal */}
@@ -84,11 +84,10 @@ const AcceptBloodRequest = ({
             className="w-20 h-20 mx-auto mb-4"
           />
           <Text className="text-center text-[16px] font-bold mb-4">
-            Accept Blood Request
+            Mark Donation as Completed
           </Text>
           <Text className="text-center text-[14px] text-[#4C4C4C] mb-6">
-            Are you sure you want to accept this blood request? Once accepted,
-            you will be contacted by the recipient.
+            We're happy that you received a donation through this app, please ensure to refer your loved ones and friends to become a donor too.
           </Text>
 
           {/* Actions */}
@@ -111,7 +110,7 @@ const AcceptBloodRequest = ({
                 <ActivityIndicator color="#ffffff" />
               ) : (
                 <Text className="text-white text-[16px] font-bold">
-                  Yes, Accept
+                  Yes, Complete Donation
                 </Text>
               )}
             </Pressable>
@@ -147,11 +146,10 @@ const AcceptBloodRequest = ({
 
         <View className="absolute bottom-0 w-full bg-white rounded-t-2xl p-6 shadow-md">
           <Text className="text-center text-[16px] font-bold mb-4">
-            Blood Request Accepted
+            Blood Donation Marked As Completed
           </Text>
           <Text className="text-center text-[14px] text-[#4C4C4C] mb-6">
-            You've accepted this blood request. Click below to view recipient
-            and hospital details.
+            You've accepted successfully marked this donation as complete. Ensure to invite your loved ones to use this app so more persons can get access to safe and timely blood just like you just did.
           </Text>
 
           {/* Close Button */}
@@ -160,7 +158,7 @@ const AcceptBloodRequest = ({
             className="w-full h-[53px] bg-[#008000] rounded-[10px] flex justify-center items-center"
           >
             <Text className="text-white text-[16px] font-bold">
-              View Details
+              Great!
             </Text>
           </Pressable>
         </View>
@@ -169,4 +167,4 @@ const AcceptBloodRequest = ({
   );
 };
 
-export default AcceptBloodRequest;
+export default MarkDonationAsReceived;

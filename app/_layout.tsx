@@ -9,6 +9,9 @@ import { useColorScheme } from "@/hooks/useColorScheme";
 import { Provider } from "react-redux";
 import { store } from "@/redux/store";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useRootNavigationState } from "expo-router";
+
+
 
 export default function RootLayout() {
   const colorScheme = useColorScheme();
@@ -21,48 +24,51 @@ export default function RootLayout() {
   });
 
   const [isAuthenticated, setIsAuthenticated] = useState<null | boolean>(null); // null indicates loading state
-  const [isMounted, setIsMounted] = useState(false); // Track component mount status
+  const [isReady, setIsReady] = useState(false); // Track component mount status
   const router = useRouter();
+const rootNavigationState = useRootNavigationState();
 
   useEffect(() => {
     const loadApp = async () => {
       await SplashScreen.preventAutoHideAsync();
-
-      // Check token validity
       const token = await AsyncStorage.getItem("userToken");
-      if (token) {
-        // Optionally, validate the token with your backend here
-        setIsAuthenticated(true);
-      } else {
-        setIsAuthenticated(false);
-      }
+      console.log(token,"token")
+      setIsAuthenticated(!!token); // Convert token to boolean
 
       if (fontsLoaded) {
-        SplashScreen.hideAsync();
+        console.log("We're here")
+        setIsReady(true);
+        await SplashScreen.hideAsync();
       }
     };
     loadApp();
   }, [fontsLoaded]);
 
   useEffect(() => {
-    setIsMounted(true); // Set mounted status to true after component mounts
-  }, []);
+    console.log(isReady,"isReady here")
+      console.log(isReady, "isReady here");
+      console.log(
+        rootNavigationState.key,
+        "rootNavigationState mounted here"
+      );
+      console.log(isAuthenticated, "isAuthenticated here");
 
-  useEffect(() => {
-    if (isMounted && isAuthenticated !== null) {
-      // Navigate based on authentication status
-      if (isAuthenticated) { //change this after
-        router.replace("/(tabs)"); // Navigate to the main app screen
-      } else {
-        router.replace("/(onboarding)"); // Navigate to the onboarding screen
-      }
-    }
-  }, [isMounted, isAuthenticated]);
+    // Ensure everything is ready before navigating
+    if (!isReady || !rootNavigationState?.key || isAuthenticated === null)
+      return;
+     console.log("We got here","we got here")
+     if (isAuthenticated) {
+      console.log("routing")
+       router.replace("/(tabs)");
+     } else {
+       router.replace("/(onboarding)");
+     }
+    setTimeout(() => {
+      console.log(isAuthenticated, "authenticated and token")
+      
+    }, 2000); // Small delay to prevent race conditions
+  }, [isReady, rootNavigationState.key, isAuthenticated]);
 
-  if (!fontsLoaded || isAuthenticated === null) {
-    // Show a loading indicator or splash screen while fonts are loading or auth status is being determined
-    return null;
-  }
 
   return (
     <Provider store={store}>
@@ -76,6 +82,7 @@ export default function RootLayout() {
             options={{ headerShown: false }}
           />
           <Stack.Screen name="request/[id]" options={{ headerShown: false }} />
+          <Stack.Screen name="recipientrequestscreen/[id]" options={{ headerShown: false }} />
           <Stack.Screen name="+not-found" />
         </Stack>
       </ThemeProvider>

@@ -43,7 +43,7 @@ const request = () => {
             </Pressable>
             <View className="flex-1">
               <Text className="text-[#E8EAED] text-center text-[18px] font-euclidMedium ">
-                My Blood Requests 
+                My Blood Requests
               </Text>
             </View>
           </View>

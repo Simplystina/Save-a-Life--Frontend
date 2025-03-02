@@ -45,7 +45,6 @@ const MarkDonationAsReceived = ({
 
   const closeConfirmationModal = () => {
     setConfirmationModalVisible(false);
-    console.log("Got to this modal")
     router.push("/recipientrequestscreen/[id]");
      setAcceptedRequest(true);
   };

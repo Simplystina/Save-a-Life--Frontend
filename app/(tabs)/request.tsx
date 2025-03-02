@@ -25,28 +25,28 @@ const request = () => {
   const router = useRouter();
   return (
     <SafeAreaView className="flex-1">
-      <ScrollView>
-        {/* Header */}
-        <LinearGradient
-          colors={["#DC110A", "#C30D02"]}
-          start={{ x: 0.1, y: 0 }}
-          end={{ x: 1, y: 1 }}
-          className="pt-20 pl-4 pr-4 h-[145px] "
-        >
-          <View className="flex-row items-center justify-between  relative">
-            {/* Greeting Section */}
-            <Pressable onPress={() => router.back()}>
-              <View className="border-[1px] border-white rounded-[8px]  w-10 h-10 flex items-center justify-center">
-                <Icon name="left" size={24} color="white" />
-              </View>
-            </Pressable>
-            <View className="flex-1">
-              <Text className="text-[#E8EAED] text-center text-[18px] font-euclidMedium ">
-                Blood Request
-              </Text>
+      {/* Header */}
+      <LinearGradient
+        colors={["#DC110A", "#C30D02"]}
+        start={{ x: 0.1, y: 0 }}
+        end={{ x: 1, y: 1 }}
+        className="sticky top-0 z-10 pt-20 pl-4 pr-4 h-[145px] "
+      >
+        <View className="flex-row items-center justify-between  relative">
+          {/* Greeting Section */}
+          <Pressable onPress={() => router.back()}>
+            <View className="border-[1px] border-white rounded-[8px]  w-10 h-10 flex items-center justify-center">
+              <Icon name="left" size={24} color="white" />
             </View>
+          </Pressable>
+          <View className="flex-1">
+            <Text className="text-[#E8EAED] text-center text-[18px] font-euclidMedium ">
+              Blood Request
+            </Text>
           </View>
-        </LinearGradient>
+        </View>
+      </LinearGradient>
+      <ScrollView>
         <View className="flex-row justify-around bg-gray-100 p-2 m-4 ">
           {tabs.map((tab) => (
             <TouchableOpacity

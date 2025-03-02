@@ -21,7 +21,7 @@ const SingleRequest = () => {
   const [acceptedRequest, setAcceptedRequest] = useState(false);
   const [rejectedRequest, setRejectedRequest] = useState(false);
  const [status, setStatus] = useState<string>("pending")
-  const stateColors = {
+  const stateColors :any = {
     pending: "#FFDE00", // Yellow
     accepted: "#4CAF50", // Green
     rejected: "#F44336", // Red

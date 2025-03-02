@@ -11,10 +11,41 @@ import {
 } from "react-native";
 import React, { useState } from "react";
 import { useRouter } from "expo-router";
+import { format } from "date-fns";
 
-const RequestCard = () => {
+// Define TypeScript interface for the request data
+interface RequestDataProps {
+  requestData: {
+    _id: string;
+    recipientId: string;
+    bloodType: string;
+    isRequestForSelf: boolean;
+    status: string;
+    recipientName: string;
+    hospitalName: string;
+    hospitalLocation: string;
+    hospitalStateOfResidence: string;
+    doctorsName: string;
+    age: number;
+    reason: string;
+    suggestedDonors: any[];
+    createdAt: string;
+    updatedAt: string;
+    __v: number;
+    id: string;
+  };
+}
 
-  const stateColors = {
+// Define the status colors type
+type StateColors = {
+  [key: string]: string;
+};
+
+const RequestCard: React.FC<RequestDataProps> = ({ requestData }) => {
+  const router = useRouter();
+
+  // Status colors mapping
+  const stateColors: StateColors = {
     pending: "#FFDE00", // Yellow
     accepted: "#4CAF50", // Green
     rejected: "#F44336", // Red
@@ -22,13 +53,35 @@ const RequestCard = () => {
     matched: "#2196F3", // Blue
     // Add other states and their colors as needed
   };
-  const router = useRouter();
-  const id = 3;
-   const backgroundColor = stateColors["pending"] || "#FFFFFF";
+
+  
+
+  // Extract properties with default values for safety
+  const {
+    _id, status, recipientName ,age,doctorsName, 
+    hospitalName, hospitalLocation, hospitalStateOfResidence = "",
+    createdAt , bloodType, 
+  } = requestData;
+
+  // Format the created date
+  const formattedDate = (() => {
+    try {
+      return format(new Date(createdAt), "do MMMM yyyy");
+    } catch (error) {
+      return "Invalid date";
+    }
+  })();
+
+  // Determine background color based on status
+  const backgroundColor = stateColors[status.toLowerCase()] || "#FFFFFF";
+
+  // Format hospital address
+  const hospitalAddress = `${hospitalLocation}, ${hospitalStateOfResidence}`;
+
   return (
-    <Pressable onPress={() => router.push(`/recipientrequestscreen/[id]`)}>
+    <Pressable onPress={() => router.push(`/recipientrequestscreen/${_id}`)}>
       <View
-        className="border-[2px] border-[#E8EAED] p-4 mt-6"
+        className="border-[2px] border-[#E8EAED] p-4 mt-6 mx-4 rounded-lg"
         style={{
           shadowColor: "#0517309e", // Shadow color (iOS)
           shadowOffset: { width: 0, height: 4 }, // Offset for shadow (iOS)
@@ -39,14 +92,16 @@ const RequestCard = () => {
       >
         <View className="flex flex-row items-center justify-between p-4 border-b-[4px] border-b-[#E8EAED]">
           <Text className="font-euclidBold text-[#0E0E0E] text-[18px] font-[600] mr-2">
-            Request Status :
+            Request Status:
           </Text>
-          <View className="p-3 rounded-2xl bg-[#FFDE00]">
-            <Text className="font-euclidBold">pending</Text>
+          <View className="p-3 rounded-2xl" style={{ backgroundColor }}>
+            <Text className="font-euclidBold">
+              {status.charAt(0).toUpperCase() + status.slice(1).toLowerCase()}
+            </Text>
           </View>
         </View>
-        <View className="flex flex-row  justify-between p-4">
-          <View className="flex flex-col space-y-2 w-2/4 ">
+        <View className="flex flex-row justify-between p-4">
+          <View className="flex flex-col space-y-2 w-2/5">
             <Text className="font-euclidMedium text-[#858585] text-[15px] font-[600]">
               Patient Name:
             </Text>
@@ -54,71 +109,59 @@ const RequestCard = () => {
               Patient Age:
             </Text>
             <Text className="font-euclidMedium text-[#858585] text-[15px] font-[600]">
+              Blood Type:
+            </Text>
+            <Text className="font-euclidMedium text-[#858585] text-[15px] font-[600]">
               Physician Name:
+            </Text>
+            <Text className="font-euclidMedium text-[#858585] text-[15px] font-[600]">
+              Hospital Name:
             </Text>
             <Text className="font-euclidMedium text-[#858585] text-[15px] font-[600]">
               Hospital Address:
             </Text>
             <Text className="font-euclidMedium text-[#858585] text-[15px] font-[600]">
+              Hospital State of Residence:
+            </Text>
+            <Text className="font-euclidMedium text-[#858585] text-[15px] font-[600]">
               Date of Request:
             </Text>
           </View>
-          <View className="flex flex-col space-y-2 w-2/4 ">
-            <Text className="text-left  font-euclidBold text-[15px] font-[600]">
-              Ahmad Sharma
+          <View className="flex flex-col space-y-2 w-3/5">
+            <Text className="text-left font-euclidBold text-[15px] font-[600]">
+              {recipientName}
             </Text>
-            <Text className="text-left  font-euclidBold text-[15px] font-[600]">
-              16 years old
+            <Text className="text-left font-euclidBold text-[15px] font-[600]">
+              {age} years old
             </Text>
-            <Text className="text-left  font-euclidBold text-[15px] font-[600]">
-              Dr. Harry Singh
+            <Text className="text-left font-euclidBold text-[15px] font-[600]">
+              {bloodType}
             </Text>
-            <Text className="text-left  font-euclidBold text-[15px] font-[600]">
-              15, Local street, off Sango, Surulere, Lagos.
+            <Text className="text-left font-euclidBold text-[15px] font-[600]">
+              {doctorsName}
             </Text>
-            <Text className="text-left  font-euclidBold text-[15px] font-[600]">
-              7th February 2024
+            <Text className="text-left font-euclidBold text-[15px] font-[600]">
+              {hospitalName}
+            </Text>
+            <Text className="text-left font-euclidBold text-[15px] font-[600] flex-wrap">
+              {hospitalAddress}
+            </Text>
+            <Text className="text-left font-euclidBold text-[15px] font-[600] flex-wrap">
+              {hospitalStateOfResidence}
+            </Text>
+            <Text className="text-left font-euclidBold text-[15px] font-[600]">
+              {formattedDate}
             </Text>
           </View>
         </View>
         <TouchableOpacity
-          onPress={() => router.push(`/recipientrequestscreen/[id]`)}
-          className="bg-[#008000] border-2 p-4 border-[#23C223] rounded-[10px] shadow-md shadow-[#DAE1EB9E] flex justify-center items-center"
+          onPress={() => router.push(`/recipientrequestscreen/${_id}`)}
+          className="bg-[#008000] border-2 p-4 border-[#23C223] rounded-[10px] shadow-md shadow-[#DAE1EB9E] flex justify-center items-center mt-2"
         >
           <Text className="font-euclid text-center text-white">
-            Click to View
+            View Details
           </Text>
         </TouchableOpacity>
-        {/* <View className="flex flex-row justify-between gap-4 items-center p-4">
-          <TouchableOpacity
-            style={{
-              shadowColor: "#DAE1EB9E", // Shadow color
-              shadowOffset: { width: 0, height: 4 }, // Shadow offset
-              shadowOpacity: 0.5, // Shadow opacity
-              shadowRadius: 30, // Shadow blur radius
-              elevation: 10, // Shadow for Android
-            }}
-            className="w-[156px] h-[43px] bg-[#008000] border-2 border-[#23C223] rounded-[10px] shadow-md shadow-[#DAE1EB9E] flex justify-center items-center"
-          >
-            <Text className="text-white text-[16px] font-bold">
-              Mark donation as Completed
-            </Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={{
-              shadowColor: "#DAE1EB9E", // Shadow color
-              shadowOffset: { width: 0, height: 4 }, // Shadow offset
-              shadowOpacity: 0.5, // Shadow opacity
-              shadowRadius: 30, // Shadow blur radius
-              elevation: 10, // Shadow for Android
-            }}
-            className="w-[156px] h-[43px] bg-[#FFFFF] border-2 border-[#F64F49] rounded-[10px] shadow-md shadow-[#DAE1EB9E] flex justify-center items-center"
-          >
-            <Text className="text-[#C30D02] font-euclidSemiBold text-[16px] font-bold">
-              Cancel Blood Request
-            </Text>
-          </TouchableOpacity>
-        </View> */}
       </View>
     </Pressable>
   );

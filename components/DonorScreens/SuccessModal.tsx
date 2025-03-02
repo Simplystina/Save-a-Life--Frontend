@@ -45,7 +45,6 @@ const AcceptBloodRequest = ({
 
   const closeConfirmationModal = () => {
     setConfirmationModalVisible(false);
-    console.log("Got to this modal")
     router.push("/request/1");
      setAcceptedRequest(true);
   };

@@ -20,9 +20,7 @@ export default function OTPScreen() {
   const dispatch = useDispatch<AppDispatch>();
   const { isLoading, success, error, user } = useSelector((state : RootState) => state.auth);
    useEffect(() => {
-    console.log(success,"success")
     if (success) {
-      console.log("We didn't get here");
       Toast.show({
         type: "success",
         text1: "OTP Verified Successful 🎉",
@@ -36,10 +34,7 @@ export default function OTPScreen() {
         router.replace("/(onboarding)/login");
       }, 2000); // 2000ms = 2 seconds
     }
-
-  console.log(error,"checking the error")
     if (error) {
-      console.log("We still got here")
       Toast.show({
         type: "error",
         text1: error,
@@ -91,8 +86,6 @@ export default function OTPScreen() {
       Alert.alert("Invalid OTP", "Please enter the 6-digit OTP.");
       return;
     }
-
-    console.log("Verifying OTP:", enteredOTP, user, user?.email);
     if(user?.email){
       dispatch(verifyOTP({ email: user.email, otp: enteredOTP }));
     }

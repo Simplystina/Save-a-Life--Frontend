@@ -6,9 +6,9 @@ import {
   Pressable,
   Text,
   Alert,
-  ScrollView
+  ScrollView,
 } from "react-native";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Collapsible from "@/components/Collapsible";
 import { LinearGradient } from "expo-linear-gradient";
 import Icon from "react-native-vector-icons/AntDesign";
@@ -16,11 +16,20 @@ import { useRouter } from "expo-router";
 import * as Contacts from "expo-contacts";
 import * as Linking from "expo-linking";
 import { Share } from "react-native";
+import { logout } from "@/features/authSlice";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch } from "@/redux/store";
+import { RootState } from "@/redux/store";
 
 export default function Profile() {
   const router = useRouter();
   const [showReferralSection, setShowReferralSection] = useState(true);
+  const dispatch = useDispatch<AppDispatch>();
+    const {user} = useSelector(
+       (state: RootState) => state.auth
+     );
 
+ 
   // Generate unique referral link
   const generateReferralLink = () => {
     const userId = "user123"; // Replace with actual user ID
@@ -43,8 +52,8 @@ export default function Profile() {
       });
 
       const shareContent = {
-        message: `Hey! I've found an amazing blood donation app called Save-A-Life that helps save lives by matching blood donors to recipients. Join me in making a difference! ${generateReferralLink()}`,
-        subject: "Join Our Blood Donation Community- Save-A-Life",
+        message: `Hey! I've found an amazing blood donation app that helps save lives. Join me in making a difference! ${generateReferralLink()}`,
+        subject: "Join Our Blood Donation Community",
       };
 
       await Share.share(shareContent, {
@@ -61,7 +70,7 @@ export default function Profile() {
 
   // Handle WhatsApp sharing
   const handleWhatsAppShare = async () => {
-    const message = `I'm part of a life-saving blood donation community called Save-A-Life! Join me in making a difference! ${generateReferralLink()}`;
+    const message = `I'm part of a life-saving blood donation community! Join me in making a difference! ${generateReferralLink()}`;
     const encodedMessage = encodeURIComponent(message);
     const whatsappUrl = `whatsapp://send?text=${encodedMessage}`;
 
@@ -90,8 +99,7 @@ export default function Profile() {
       {
         text: "Logout",
         onPress: () => {
-          // Add your logout logic here
-          // For example: clearAuthToken(), resetUserState(), etc.
+          dispatch(logout());
           router.replace("/login"); // Navigate to login screen
         },
       },
@@ -159,10 +167,10 @@ export default function Profile() {
             className="w-24 h-24 rounded-full mb-3"
           />
           <Text className="font-euclidSemiBold text-center mb-1 text-[18px] text-white">
-            Jimoh Oyindamola
+            {user?.firstName} {user?.lastName}
           </Text>
           <Text className="font-euclid text-center text-[15px] text-white">
-            jimohoyindamola@gmail.com
+            {user?.email}
           </Text>
         </View>
       </LinearGradient>
@@ -261,3 +269,4 @@ export default function Profile() {
     </ScrollView>
   );
 }
+ 

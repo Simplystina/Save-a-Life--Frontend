@@ -28,9 +28,7 @@ const login = () => {
    const router = useRouter();
   const dispatch = useDispatch<AppDispatch>();
   useEffect(() => {
-    console.log(loginSuccess,"success", error, "checking the error");
     if (loginSuccess) {
-      console.log("We didn't get here");
       Toast.show({
         type: "success",
         text1: "User LoggedIn Successfully 🎉",
@@ -42,9 +40,7 @@ const login = () => {
         router.push("/(tabs)");
       }, 2000);
     }
-    console.log(error, "checking the error");
     if (error) {
-      console.log("We still got here");
       Toast.show({
         type: "error",
         text1: error,
@@ -74,7 +70,6 @@ const login = () => {
         if (!(email && password)){
           return
         }
-       console.log("submit button clicked")
         e.preventDefault();
         dispatch(loginUser({ email, password}));
         

@@ -31,9 +31,7 @@ export default function Signup() {
       dispatch(resetState());
       router.push("/(onboarding)/OTP");
     }
-  console.log(error,"checking the error")
     if (error) {
-      console.log("We still got here")
       Toast.show({
         type: "error",
         text1: error,
@@ -89,7 +87,6 @@ const onDateChange = (event:any, selectedDate:any) => {
  // Handle DatePicker value change
  const onChange = (event: any, selectedDate?: Date) => {
    const currentDate = selectedDate || dateOfBirth;
-   console.log(show,"showwww")
    setDateOfBirth(currentDate);
    setShow(false);
  };
@@ -125,7 +122,6 @@ const onDateChange = (event:any, selectedDate:any) => {
           alert("Passwords do not match");
           return;
         }
-        console.log(formData, dateOfBirth, lastDonationDate);
         dispatch(signUpUser({ firstName, lastName, email, password, currentAddress, stateOfResidence, dateOfBirth, lastDonationDate , bloodType}));
       }
    };

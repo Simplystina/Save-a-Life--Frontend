@@ -32,11 +32,9 @@ const rootNavigationState = useRootNavigationState();
     const loadApp = async () => {
       await SplashScreen.preventAutoHideAsync();
       const token = await AsyncStorage.getItem("userToken");
-      console.log(token,"token")
       setIsAuthenticated(!!token); // Convert token to boolean
 
       if (fontsLoaded) {
-        console.log("We're here")
         setIsReady(true);
         await SplashScreen.hideAsync();
       }
@@ -45,26 +43,15 @@ const rootNavigationState = useRootNavigationState();
   }, [fontsLoaded]);
 
   useEffect(() => {
-    console.log(isReady,"isReady here")
-      console.log(isReady, "isReady here");
-      console.log(
-        rootNavigationState.key,
-        "rootNavigationState mounted here"
-      );
-      console.log(isAuthenticated, "isAuthenticated here");
-
     // Ensure everything is ready before navigating
     if (!isReady || !rootNavigationState?.key || isAuthenticated === null)
       return;
-     console.log("We got here","we got here")
      if (isAuthenticated) {
-      console.log("routing")
        router.replace("/(tabs)");
      } else {
        router.replace("/(onboarding)");
      }
     setTimeout(() => {
-      console.log(isAuthenticated, "authenticated and token")
       
     }, 2000); // Small delay to prevent race conditions
   }, [isReady, rootNavigationState.key, isAuthenticated]);

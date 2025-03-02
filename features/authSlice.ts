@@ -70,10 +70,8 @@ export const signUpUser = createAsyncThunk<
       `${API_URL}/auth/signup`,
       userData
     );
-    console.log(response.data,"dataaaaaaa")
     return response.data;
   } catch (error: any) {
-    console.log(error, error.response.data, "there is an error")
     return rejectWithValue(error.response.data);
   }
 });
@@ -88,7 +86,6 @@ export const loginUser = createAsyncThunk<
       `${API_URL}/auth/login`,
       loginData
     );
-    console.log(response.data.token,"response data")
     await AsyncStorage.setItem("userToken", response.data.data.token); 
     return response.data;
   } catch (error: any) {
@@ -101,7 +98,6 @@ export const verifyOTP = createAsyncThunk<
   OTPData,
   { rejectValue: ErrorResponse }
 >("auth/verifyOTP", async (otpData, { rejectWithValue }) => {
-  console.log(otpData,"otpData")
   try {
     const response = await axios.get(
       `${API_URL}/auth/verify?email=${otpData.email}&otp=${otpData.otp}`,);
@@ -148,9 +144,7 @@ const authSlice = createSlice({
       .addCase(
         signUpUser.fulfilled,
         (state, action: PayloadAction<AuthResponse>) => {
-          console.log("We got here at least")
           state.isLoading = false;
-          console.log(action.payload, "bloooddd")
           state.user = action.payload.data;
           state.token = action.payload.token;
           state.success = true;
@@ -158,7 +152,6 @@ const authSlice = createSlice({
       )
       .addCase(signUpUser.rejected, (state, action) => {
         state.isLoading = false;
-        console.log(action.payload?.error,"We had an error")
         state.error = action.payload?.error || action.payload?.message || "Signup failed";
       })
       .addCase(loginUser.pending, (state) => {
@@ -192,7 +185,6 @@ const authSlice = createSlice({
       )
       .addCase(verifyOTP.rejected, (state, action) => {
         state.isLoading = false;
-        console.log(action.payload)
         state.error = action.payload?.error || action.payload?.message || "OTP verification failed";
       });
   },

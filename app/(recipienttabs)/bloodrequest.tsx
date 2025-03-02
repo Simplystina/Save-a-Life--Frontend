@@ -79,7 +79,6 @@ const request = () => {
   );
 
   const handleSubmit = async (event: any) => {
-    console.log("Got here 2")
     event.preventDefault();
     const requestData: any = {
       ...form,
@@ -90,7 +89,6 @@ const request = () => {
   };
 
   useEffect(() => {
-    console.log(status,"status")
     if (status === "success") {
       Toast.show({
         type: "success",
@@ -103,7 +101,6 @@ const request = () => {
       }, 5000);
     }
     if (status === "failed") {
-      console.log("got hereee")
       Toast.show({
         type: "error",
         text1: error || "An error occurred",

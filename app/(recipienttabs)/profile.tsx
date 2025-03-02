@@ -16,10 +16,14 @@ import { useRouter } from "expo-router";
 import * as Contacts from "expo-contacts";
 import * as Linking from "expo-linking";
 import { Share } from "react-native";
+import { logout } from "@/features/authSlice";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch } from "@/redux/store";
 
 export default function Profile() {
   const router = useRouter();
   const [showReferralSection, setShowReferralSection] = useState(true);
+ const dispatch = useDispatch<AppDispatch>();
 
   // Generate unique referral link
   const generateReferralLink = () => {
@@ -90,8 +94,7 @@ export default function Profile() {
       {
         text: "Logout",
         onPress: () => {
-          // Add your logout logic here
-          // For example: clearAuthToken(), resetUserState(), etc.
+          dispatch(logout())
           router.replace("/login"); // Navigate to login screen
         },
       },
